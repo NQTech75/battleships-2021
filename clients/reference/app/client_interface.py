@@ -25,3 +25,7 @@ class ClientInterface:
     @abstractmethod
     def defeat(self):
         pass
+
+    @abstractmethod
+    def sunk(self, ship):
+        pass

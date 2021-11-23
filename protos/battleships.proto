@@ -15,6 +15,7 @@ message Request {
         Player join = 1;
         Attack move = 2;
         Status report = 3;
+        Sunk which_ship = 4;
     }
 }
 
@@ -25,12 +26,14 @@ message Response {
         STOP_TURN = 2;
         WIN = 3;
         LOSE = 4;
+        SUNK = 5;
     }
 
     oneof event {
         State turn = 1;
         Attack move = 2;
         Status report = 3;
+        Sunk which_ship = 4;
     }
 }
 
@@ -46,4 +49,8 @@ message Status {
     }
 
     State state = 1;
+}
+
+message Sunk {
+    string sunk_ship = 1;
 }

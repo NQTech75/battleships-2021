@@ -1,0 +1,3 @@
+--- change directory to protos folder and run this in commander to compile and generate the gRPC classes
+
+λ python -m grpc_tools.protoc --proto_path=. --python_out=. --grpc_python_out=. battleships.proto

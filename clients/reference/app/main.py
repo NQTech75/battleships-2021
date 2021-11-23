@@ -12,6 +12,16 @@ playing.set()
 battleship = BattleshipClient(grpc_host=grpc_host, grpc_port=grpc_port)
 
 
+SHIP_NAMES = {
+    'A': 'Aircraft Carrier',
+    'B': 'Battleship',
+    'S': 'Submarine', 's': 'Submarine', '5': 'Submarine',
+    'C': 'Cruiser',
+    'D': 'Destroyer', 'd': 'Destroyer',
+    'P': 'Patrol Boat', 'p': 'Patrol Boat',
+}
+
+
 @battleship.on()
 def begin():
     print('Game started!')
@@ -40,6 +50,11 @@ def miss():
 
 
 @battleship.on()
+def sunk(ship):
+    print(f'We sunk their {ship}')
+
+
+@battleship.on()
 def win():
     print('Yay! You won!')
     playing.clear()
@@ -57,7 +72,7 @@ def attack(vector):
     vector = vector.strip()
     print(f'Shot received at {vector}')
     while True:
-        print("""H)it, m)iss, or d)efeat?""")
+        print("""H)it, m)iss, s)unk or d)efeat?""")
         s = input('Enter status> ')
         if len(s):
             _s = s[0].upper()
@@ -66,6 +81,12 @@ def attack(vector):
                 break
             elif _s == 'M':
                 battleship.miss()
+                break
+            elif _s == 'S':
+                ship = input('Which Ship Sunk?')
+                print(ship)
+                _ship = ship.upper()
+                battleship.sunk(_ship)
                 break
             elif _s == 'D':
                 battleship.defeat()

@@ -22,6 +22,7 @@ class Message:
     ATTACK = 'attack'
     STATUS = 'status'
     LOST = 'lost'
+    SUNK = 'sunk'
 
     def dumps(self):
         """Create a JSON object that can be used to send the message

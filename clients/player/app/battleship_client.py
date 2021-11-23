@@ -1,3 +1,14 @@
+"""
+Project:            mjb-battleships-2021
+File:               battleship_client.py
+Modified by:        Matt Barton V244576
+
+Description:
+
+
+"""
+
+
 import grpc
 import logging
 import queue
@@ -20,7 +31,6 @@ class BattleshipClient(ClientInterface):
         Response.State.STOP_TURN: 'end_turn',
         Response.State.WIN: 'win',
         Response.State.LOSE: 'lose',
-        Response.State.SUNK: 'ship',
     }
 
     # The gRPC report states mapped onto handler method names
@@ -69,7 +79,7 @@ class BattleshipClient(ClientInterface):
                           pass
 
         Handlers that are supported are `begin`, `start_turn`,
-        `end_turn`, `attack`, `hit`, `miss`, `defeat`,'sunk'.
+        `end_turn`, `attack`, `hit`, `miss`, `defeat`.
         """
 
         def decorator(f):
@@ -110,7 +120,7 @@ class BattleshipClient(ClientInterface):
         self.__send(Request(join=Request.Player(id=self.__player_id)))
 
     def __send(self, msg):
-        """Convience method that places a message in the queue for
+        """Convenience method that places a message in the queue for
         transmission to the game server.
         """
         self.__queue.put(msg)
@@ -205,10 +215,8 @@ class BattleshipClient(ClientInterface):
                 self.__exc_callback(self.STATES[msg.report.state])
             else:
                 logger.error('Report contains unknown state!')
-
         elif which == 'which_ship':
             self.__exc_callback('sunk', msg.which_ship.sunk_ship)
-
         else:
             logger.error('Got unknown response type!')
 

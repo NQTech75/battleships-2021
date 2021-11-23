@@ -40,3 +40,4 @@ class Game:
         """
         with self.__lock:
             self.__my_turn = False
+

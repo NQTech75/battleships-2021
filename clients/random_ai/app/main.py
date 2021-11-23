@@ -7,6 +7,7 @@ from battlefield import Battlefield
 from battlefield_ui import BattlefieldUI
 from battleship_client import BattleshipClient
 
+
 # Without this, nothing shows up...
 logging.basicConfig()
 
@@ -48,6 +49,8 @@ class Game(EasyFrame):
         self.__opponent_ui = BattlefieldUI(self, width=400, height=400, size=self.SIZE,
                                            colour='lightgreen')
 
+
+
         fields = []
         if not mirrored:
             fields.append(self.__opponent_ui)
@@ -84,6 +87,7 @@ class Game(EasyFrame):
         client.add_event_listener('win', self.won)
         client.add_event_listener('lose', self.lost)
         client.add_event_listener('attack', self.attacked)
+        client.add_event_listener('sunk', self.sunk)
         return client
 
     def clear(self):
@@ -228,6 +232,10 @@ class Game(EasyFrame):
                 self.__client.defeat()
             else:
                 self.__client.hit()
+
+    def sunk(self, ship):
+        sunk_ship = self.SHIP_NAMES[ship]
+        logger.info(f'We Sunk their {sunk_ship}')
 
 
 def main():

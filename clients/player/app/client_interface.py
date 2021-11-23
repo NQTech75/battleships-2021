@@ -1,3 +1,12 @@
+"""
+Project:            mjb-battleships-2021
+File:               client_interface.py
+Modified by:        Matt Barton V244576
+
+Description:
+Interface for communications to server
+need to send if ship is sunk and if so which ship type
+"""
 from abc import abstractmethod
 
 

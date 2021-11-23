@@ -7,7 +7,7 @@ import threading
 import time
 import uuid
 import log
-from battleships_pb2 import Attack, Response, Status
+from battleships_pb2 import Attack, Response, Status, Sunk
 from battleships_pb2_grpc import BattleshipsServicer
 from game import Game
 from message import Message
@@ -257,9 +257,21 @@ class _Server:
                 else:
                     logger.error(f'({player_id}) - gRPC - '
                                  'Got {Report} request but my turn!')
+            elif request.HasField('which_ship'):
+                ship = request.which_ship.sunk_ship
 
+                logger.info(f'({player_id}) - gRPC - {{Sunk}} - '
+                            f'{ship}')
+
+                # It must not be my move if we have to handle a sunk ship
+                if not game.my_turn:
+                    msg = Message(Message.SUNK, player_id, ship)
+                    self.publish(game.id, msg)
+                else:
+                    logger.error(f'({player_id}) - gRPC - '
+                                 'Got {Sunk} request but it is my turn!')
             else:
-                logger.error('Received an unknown message type!')
+                logger.error(f'Received an unknown message type! {request}')
 
     @property
     def redis_conn(self):
@@ -341,6 +353,15 @@ class _Server:
 
             if message.player != player_id:
                 self.send(Response(move=Attack(vector=message.data)))
+
+        elif message_type == Message.SUNK:
+            logger.info(f'({player_id}) - pubsub - '
+                        f'Received SUNK from player {message.player} '
+                        f'with ship {message.data}.')
+            if message.player != player_id:
+                self.send(Response(which_ship=Sunk(sunk_ship=message.data)))
+                message = Message(Message.STOP_TURN, player_id, '')
+                self.publish(game.id, message)
 
         elif message_type == Message.STATUS:
             states = {
